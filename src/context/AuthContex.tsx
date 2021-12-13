@@ -38,14 +38,6 @@ export const AuthProvader: React.FC = ({children}) => {
     
   })
 
-  // useEffect(() => {
-  //   const user = localStorage.getItem('@inter:User');
-  //   console.log(user)
-  //   if(user){
-  //     const temp = JSON.parse(user);
-  //     setUser(temp);
-  //   }
-  // },[])
 
   const userSignin = async (userData: SignInData) =>{
     const {data} = await signIn(userData);
