@@ -1,20 +1,24 @@
+import {useEffect, useState} from 'react'
 import {StatementContainer, StatementItemContainer, StatementItemImage, StatementItemInfo } from './styles'
 
 import {format} from 'date-fns'
 import {FiDollarSign} from 'react-icons/fi'
 
-interface StatementItem {
+import {transactions} from '../../../services/resouces/pix'
+
+interface StatementItemDTO {
+  id: string;
   user: {
     firstName: string;
     lastName: string;
   },
   value: number,
-  type: 'pay' | 'received',
-  updatedAt: Date
+  type: 'paid' | 'received',
+  updateAt: Date
 }
 
 
-const StatementItem = ({user, value, type, updatedAt}: StatementItem) => {
+const StatementItem = ({user, value, type, updateAt}: StatementItemDTO) => {
   return (
     <StatementItemContainer>
         <StatementItemImage type={type}>
@@ -24,8 +28,8 @@ const StatementItem = ({user, value, type, updatedAt}: StatementItem) => {
             <p className="primary-color">
                 {value.toLocaleString('pt-br',{style: 'currency', currency: 'BRL'})}
             </p>
-            <p className="">{type === 'pay' ? `Pago a `: `Recebido de`} <strong>{user.firstName} {user.lastName}</strong></p>
-            <p className="">{format(updatedAt, "dd/MM/yyyy 'às' HH:mm'h'")}</p>
+            <p className="">{type === 'paid' ? `Pago a `: `Recebido de`} <strong>{user.firstName} {user.lastName}</strong></p>
+            <p className="">{format(new Date(updateAt), "dd/MM/yyyy 'às' HH:mm'h'")}</p>
         </StatementItemInfo>
     </StatementItemContainer>
 )
@@ -33,31 +37,25 @@ const StatementItem = ({user, value, type, updatedAt}: StatementItem) => {
 
 
 export const Statement =() => {
-  const statements: StatementItem[] = [
-    {
-        user:{
-            firstName: 'Pablo',
-            lastName: 'Henrique'
-        },
-        value: 250.00,
-        type: 'pay',
-        updatedAt: new Date()
-    },
-    {
-        user:{
-            firstName: 'José',
-            lastName: 'Santos'
-        },
-        value: 270.00,
-        type: 'received',
-        updatedAt: new Date()
-    }
-]
+
+  const [statements, setStatements] = useState<StatementItemDTO[]>([]);
+
+  const getAllTransactions = async ()=> {
+    const {data} = await transactions()
+
+    setStatements(data);
+  }
+
+
+  useEffect(() => {
+    getAllTransactions()
+    
+  }, [])
 
 
   return (
     <StatementContainer>  
-      {statements.map(statement => <StatementItem {...statement} />)}
+      {statements.length > 0 && statements.map(item => <StatementItem key={item.id} {...item} />)}
     </StatementContainer>
   )
 }

@@ -5,6 +5,8 @@ import logoInter from '../../assets/images/Inter-orange.png'
 import { useNavigate } from "react-router-dom";
 import UserCircle from "../UserCircle";
 
+import useAuth from '../../hooks/useAuth'
+
 const Header = () => {
 
   const navegate = useNavigate();
@@ -13,17 +15,21 @@ const Header = () => {
     navegate('/')
   }
 
+  const {user} = useAuth();
+
+  const initials = user.firstName.substr(0,1) + user.lastName.substr(0,1)
+
 
   return (
     <HeaderContainer>
       <HeaderWrapper>
         <img src={logoInter} width={172} height={61} alt="Logo Inter" />
         <UserInfo>
-          <UserCircle initials="AO" />
+          <UserCircle initials={initials} />
           <div>
-            <p>Olá . <span className="primary-color font-bold">Alexandre</span> </p>
-            <strong>222222-1</strong><br />
-            <a href="#" onClick={handleLogOff}>Sair</a>
+            <p>Olá . <span className="primary-color font-bold">{user.firstName} {user.lastName}</span> </p>
+            <strong>{user.accountNumber}- {user.accountDigit}</strong><br />
+            <a href="/logout" onClick={handleLogOff}>Sair</a>
           </div>
         </UserInfo>
       </HeaderWrapper>

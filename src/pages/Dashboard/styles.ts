@@ -13,7 +13,7 @@ export const DashboardBackground = styled.main`
   background-color: ${({theme}) => theme.colors.backgroundLight};
 `
 
-export const BodyContainer = styled.main`
+export const BodyContainer = styled.section`
 width: 80%;
 margin-top: 40px;
 
